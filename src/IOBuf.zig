@@ -159,8 +159,9 @@ pub fn clear(buf: *IOBuf) void {
 }
 
 /// Deinitializes the IOBuf.
-pub fn deinit(buf: *const IOBuf) void {
+pub fn deinit(buf: *IOBuf) void {
     buf.unref();
+    buf.* = .{};
 }
 
 /// Make a shallow clone of this IOBuf.
@@ -530,7 +531,7 @@ test "range" {
     try buf.dupe("hello world", std.testing.allocator);
     defer buf.deinit();
 
-    const b = buf.range(3, 9);
+    var b = buf.range(3, 9);
     defer b.deinit();
 
     try std.testing.expectEqualStrings("lo wor", b.data());
